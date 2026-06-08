@@ -84,42 +84,126 @@ app.get("/", (req, res) => {
 
 // Result page
 app.post("/result", (req, res) => {
-  const mood = req.body.mood;
-  const drink = req.body.drink;
-  const service = req.body.service;
-  const cheki = req.body.cheki;
-
-  res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>Recovery Result</title>
-      <link rel="stylesheet" href="/style.css">
-    </head>
-
-    <body>
-      <div class="page">
-
-        <h1>Recovery Result</h1>
-
-        <div class="dialogue-box">
-          <p><strong>Mood:</strong> ${mood}</p>
-          <p><strong>Drink:</strong> ${drink}</p>
-          <p><strong>Service:</strong> ${service}</p>
-          <p><strong>Cheki:</strong> ${cheki ? "Yes" : "No"}</p>
-
-          <br>
-
-          <a href="/">← Return to Concafe</a>
+    const mood = req.body.mood;
+    const drink = req.body.drink;
+    const service = req.body.service;
+    const cheki = req.body.cheki;
+  
+    let score = 0;
+    let totalPrice = 1500;
+  
+    // Mood score
+    if (mood === "sleepy") score += 40;
+    if (mood === "stressed") score += 30;
+    if (mood === "hungry") score += 20;
+    if (mood === "assignment") score += 5;
+  
+    // Drink score
+    if (drink === "strawberry") {
+      score += 20;
+      totalPrice += 700;
+    }
+  
+    if (drink === "melon") {
+      score += 15;
+      totalPrice += 650;
+    }
+  
+    if (drink === "coffee") {
+      score += 10;
+      totalPrice += 500;
+    }
+  
+    if (drink === "energy") {
+      score += 5;
+      totalPrice += 800;
+    }
+  
+    // Service score
+    if (service === "encouragement") {
+      score += 30;
+      totalPrice += 1000;
+    }
+  
+    if (service === "praise") {
+      score += 25;
+      totalPrice += 1200;
+    }
+  
+    if (service === "study") {
+      score += 20;
+      totalPrice += 1500;
+    }
+  
+    if (service === "reality") {
+      score -= 10;
+      totalPrice += 800;
+    }
+  
+    // Cheki
+    if (cheki) {
+      score += 10;
+      totalPrice += 500;
+    }
+  
+    let image;
+    let ending;
+  
+    if (score >= 80) {
+      image = "happy.png";
+      ending =
+        "Excellent recovery! Minitoma believes you can survive another week!";
+    }
+    else if (score >= 50) {
+      image = "worried.png";
+      ending =
+        "Recovery is progressing, but please remember to rest and drink water.";
+    }
+    else {
+      image = "panic.png";
+      ending =
+        "EMERGENCY! Minitoma has activated the Student Recovery Protocol!";
+    }
+  
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Recovery Result</title>
+        <link rel="stylesheet" href="/style.css">
+      </head>
+  
+      <body>
+        <div class="page">
+  
+          <h1>Recovery Result</h1>
+  
+          <img src="/images/${image}" class="sprite">
+  
+          <div class="right-panel">
+            <div class="menu-form">
+  
+              <h2>Recovery Summary</h2>
+  
+              <p><strong>Recovery Score:</strong> ${score}</p>
+              <p><strong>Total Price:</strong> ¥${totalPrice}</p>
+  
+              <p>${ending}</p>
+  
+              <br>
+  
+              <a href="/">← Return to Concafe</a>
+  
+            </div>
+          </div>
+  
         </div>
-
-      </div>
-    </body>
-    </html>
-  `);
-});
-
+      </body>
+      </html>
+    `);
+  });
+  
 // Start server
 app.listen(3000, () => {
   console.log(
