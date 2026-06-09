@@ -1,44 +1,44 @@
 const express = require("express");
 const app = express();
 
-// Use static files inside the public folder.
-// This lets the browser load CSS and image files.
+// publicフォルダ内の静的ファイルを使用する。
+// これにより、ブラウザがCSSファイルや画像ファイルを読み込める。
 app.use(express.static("public"));
 
-// This allows Express to read data sent from an HTML form.
+// HTMLフォームから送信されたデータをExpressで読み取れるようにする。
 app.use(express.urlencoded({ extended: true }));
 
-// Convert internal form values into readable text.
+// フォーム内部の値を、画面に表示しやすい日本語に変換する。
 const moodNames = {
-  sleepy: "Sleepy",
-  stressed: "Stressed",
-  hungry: "Hungry",
-  assignment: "Assignment Hell"
+  sleepy: "眠い",
+  stressed: "ストレスがたまっている",
+  hungry: "お腹が空いた",
+  assignment: "課題地獄"
 };
 
 const drinkNames = {
-  strawberry: "Strawberry Milk Latte",
-  melon: "Melon Soda Float",
-  coffee: "Maid Coffee",
-  energy: "Emergency Energy Drink"
+  strawberry: "いちごミルクラテ",
+  melon: "メロンソーダフロート",
+  coffee: "メイドコーヒー",
+  energy: "緊急エナジードリンク"
 };
 
 const serviceNames = {
-  encouragement: "Encouragement",
-  praise: "Praise",
-  study: "Study Support",
-  reality: "Reality Check"
+  encouragement: "応援",
+  praise: "ほめてもらう",
+  study: "勉強サポート",
+  reality: "現実チェック"
 };
 
-// Homepage route.
-// This page shows the VN-style interface and the form.
+// トップページのルート。
+// VN風の画面とフォームを表示する。
 app.get("/", (req, res) => {
   res.send(`
     <!DOCTYPE html>
     <html>
     <head>
       <meta charset="UTF-8">
-      <title>Bunny Recovery Concafe</title>
+      <title>バニー回復コンカフェ</title>
       <link rel="stylesheet" href="/style.css">
     </head>
 
@@ -46,61 +46,61 @@ app.get("/", (req, res) => {
       <div class="page">
 
         <div class="title-area">
-          <h1>♡ Bunny Recovery Concafe ♡</h1>
-          <p class="subtitle">A tiny maid café recovery planner for tired students</p>
+          <h1>♡ バニー回復コンカフェ ♡</h1>
+          <p class="subtitle">お疲れの学生さん向け回復プランナー</p>
         </div>
 
         <img
           src="/images/welcome.png"
           class="sprite"
-          alt="Minitoma maid"
+          alt="ミニトマ メイド"
         >
 
         <div class="right-panel">
           <form method="POST" action="/result" class="menu-form">
 
-            <h2>Recovery Menu</h2>
+            <h2>回復プラン</h2>
 
-            <label>Mood</label>
+            <label>現在の状態</label>
             <select name="mood">
-              <option value="sleepy">Sleepy</option>
-              <option value="stressed">Stressed</option>
-              <option value="hungry">Hungry</option>
-              <option value="assignment">Assignment Hell</option>
+              <option value="sleepy">眠い</option>
+              <option value="stressed">ストレスがたまっている</option>
+              <option value="hungry">お腹が空いた</option>
+              <option value="assignment">課題地獄</option>
             </select>
 
-            <label>Drink</label>
+            <label>ドリンク</label>
             <select name="drink">
-              <option value="strawberry">Strawberry Milk Latte</option>
-              <option value="melon">Melon Soda Float</option>
-              <option value="coffee">Maid Coffee</option>
-              <option value="energy">Emergency Energy Drink</option>
+              <option value="strawberry">いちごミルクラテ</option>
+              <option value="melon">メロンソーダフロート</option>
+              <option value="coffee">メイドコーヒー</option>
+              <option value="energy">緊急エナジードリンク</option>
             </select>
 
-            <label>Service</label>
+            <label>サービス</label>
             <select name="service">
-              <option value="encouragement">Encouragement</option>
-              <option value="praise">Praise</option>
-              <option value="study">Study Support</option>
-              <option value="reality">Reality Check</option>
+              <option value="encouragement">応援</option>
+              <option value="praise">ほめてもらう</option>
+              <option value="study">勉強サポート</option>
+              <option value="reality">現実チェック</option>
             </select>
 
             <label class="checkbox">
               <input type="checkbox" name="cheki" value="yes">
-              Add Cheki (+500 yen)
+              チェキ追加（+500円）
             </label>
 
             <button type="submit">
-              Begin Recovery ♡
+              回復スタート ♡
             </button>
 
           </form>
         </div>
 
         <div class="dialogue-box">
-          <p><strong>Minitoma:</strong> Welcome home, Master ♡</p>
-          <p>Judging by your expression... it's been that kind of week, hasn't it?</p>
-          <p>Let's prepare a recovery plan together.</p>
+          <p><strong>ミニトマ:</strong> お帰りなさいませ、ご主人様♡</p>
+          <p>その表情を見ると…大変な一週間だったみたいですね。</p>
+          <p>一緒に回復プランを考えましょう♪</p>
         </div>
 
       </div>
@@ -109,9 +109,9 @@ app.get("/", (req, res) => {
   `);
 });
 
-// Result route.
-// The server receives form data, calculates the result,
-// chooses a sprite, and sends a new HTML page back to the client.
+// 結果ページのルート。
+// サーバはフォームデータを受け取り、回復度と料金を計算し、
+// 結果に応じて画像とメッセージを変えて表示する。
 app.post("/result", (req, res) => {
   const mood = req.body.mood;
   const drink = req.body.drink;
@@ -121,13 +121,13 @@ app.post("/result", (req, res) => {
   let score = 0;
   let totalPrice = 1500;
 
-  // Mood score calculation
+  // 現在の状態による回復度の計算
   if (mood === "sleepy") score += 40;
   if (mood === "stressed") score += 30;
   if (mood === "hungry") score += 20;
   if (mood === "assignment") score += 5;
 
-  // Drink score and price calculation
+  // ドリンクによる回復度と料金の計算
   if (drink === "strawberry") {
     score += 20;
     totalPrice += 700;
@@ -148,7 +148,7 @@ app.post("/result", (req, res) => {
     totalPrice += 800;
   }
 
-  // Service score and price calculation
+  // サービスによる回復度と料金の計算
   if (service === "encouragement") {
     score += 30;
     totalPrice += 1000;
@@ -169,7 +169,7 @@ app.post("/result", (req, res) => {
     totalPrice += 800;
   }
 
-  // Optional cheki
+  // チェキを追加した場合
   if (cheki) {
     score += 10;
     totalPrice += 500;
@@ -181,27 +181,27 @@ app.post("/result", (req, res) => {
   let advice;
   let themeClass;
 
-  // The server chooses a different result depending on the score.
+  // 回復度によって、表示する結果を変更する。
   if (score >= 80) {
     image = "happy.png";
-    resultTitle = "Full Recovery Ending";
+    resultTitle = "完全回復エンド";
     themeClass = "happy-theme";
-    dialogue = "Master! Your recovery plan is perfect ♡ You look much better already!";
-    advice = "Please continue with gentle pacing, enough sleep, and one small task at a time.";
+    dialogue = "ご主人様！今回の回復プランは完璧です♡ もう元気になってきましたね！";
+    advice = "無理をしすぎず、睡眠を取りながら、一つずつ課題を進めていきましょう。";
   }
   else if (score >= 50) {
     image = "worried.png";
-    resultTitle = "Careful Recovery Ending";
+    resultTitle = "回復中エンド";
     themeClass = "worried-theme";
-    dialogue = "Master... this plan will help, but Minitoma is still a little worried.";
-    advice = "Take a real break, drink water, and do not try to finish everything at once.";
+    dialogue = "ご主人様…少し回復できそうですが、ミニトマはまだ心配です。";
+    advice = "一度ちゃんと休憩して、水を飲んで、全部を一気に終わらせようとしないでくださいね。";
   }
   else {
     image = "panic.png";
-    resultTitle = "Emergency Recovery Ending";
+    resultTitle = "緊急回復エンド";
     themeClass = "panic-theme";
-    dialogue = "MASTER NOOOO! Emergency student recovery protocol has been activated!";
-    advice = "Please step away from the assignment for a moment. Eat something, breathe, and restart slowly.";
+    dialogue = "ご主人様ーーー！？緊急学生回復プロトコルを発動します！";
+    advice = "今は少し課題から離れましょう。何か食べて、深呼吸して、ゆっくり再開してください。";
   }
 
   res.send(`
@@ -209,7 +209,7 @@ app.post("/result", (req, res) => {
     <html>
     <head>
       <meta charset="UTF-8">
-      <title>Recovery Result</title>
+      <title>回復結果</title>
       <link rel="stylesheet" href="/style.css">
     </head>
 
@@ -218,59 +218,59 @@ app.post("/result", (req, res) => {
 
         <div class="title-area">
           <h1>${resultTitle}</h1>
-          <p class="subtitle">Your custom recovery plan is ready ♡</p>
+          <p class="subtitle">あなた専用の回復プランが完成しました♡</p>
         </div>
 
         <img
           src="/images/${image}"
           class="sprite"
-          alt="Minitoma result"
+          alt="ミニトマ 結果"
         >
 
         <div class="right-panel">
           <div class="result-card">
 
-            <h2>Recovery Summary</h2>
+            <h2>回復結果</h2>
 
             <div class="result-row">
-              <span>Mood</span>
+              <span>現在の状態</span>
               <strong>${moodNames[mood]}</strong>
             </div>
 
             <div class="result-row">
-              <span>Drink</span>
+              <span>ドリンク</span>
               <strong>${drinkNames[drink]}</strong>
             </div>
 
             <div class="result-row">
-              <span>Service</span>
+              <span>サービス</span>
               <strong>${serviceNames[service]}</strong>
             </div>
 
             <div class="result-row">
-              <span>Cheki</span>
-              <strong>${cheki ? "Yes" : "No"}</strong>
+              <span>チェキ</span>
+              <strong>${cheki ? "あり" : "なし"}</strong>
             </div>
 
             <hr>
 
             <div class="result-row big">
-              <span>Recovery Score</span>
+              <span>回復度</span>
               <strong>${score}</strong>
             </div>
 
             <div class="result-row big">
-              <span>Total Price</span>
+              <span>合計金額</span>
               <strong>¥${totalPrice}</strong>
             </div>
 
-            <a class="back-link" href="/">← Return to Concafe</a>
+            <a class="back-link" href="/">← トップへ戻る</a>
 
           </div>
         </div>
 
         <div class="dialogue-box">
-          <p><strong>Minitoma:</strong> ${dialogue}</p>
+          <p><strong>ミニトマ:</strong> ${dialogue}</p>
           <p>${advice}</p>
         </div>
 
@@ -280,7 +280,7 @@ app.post("/result", (req, res) => {
   `);
 });
 
-// Start the server on port 3000.
+// ポート3000でサーバを起動する。
 app.listen(3000, () => {
-  console.log("Bunny Recovery Concafe is running at http://localhost:3000");
+  console.log("バニー回復コンカフェは http://localhost:3000 で起動中です");
 });
