@@ -45,7 +45,10 @@ app.get("/", (req, res) => {
     <body>
       <div class="page">
 
-        <h1>Bunny Recovery Concafe</h1>
+        <div class="title-area">
+          <h1>♡ Bunny Recovery Concafe ♡</h1>
+          <p class="subtitle">A tiny maid café recovery planner for tired students</p>
+        </div>
 
         <img
           src="/images/welcome.png"
@@ -176,23 +179,27 @@ app.post("/result", (req, res) => {
   let resultTitle;
   let dialogue;
   let advice;
+  let themeClass;
 
   // The server chooses a different result depending on the score.
   if (score >= 80) {
     image = "happy.png";
     resultTitle = "Full Recovery Ending";
+    themeClass = "happy-theme";
     dialogue = "Master! Your recovery plan is perfect ♡ You look much better already!";
     advice = "Please continue with gentle pacing, enough sleep, and one small task at a time.";
   }
   else if (score >= 50) {
     image = "worried.png";
     resultTitle = "Careful Recovery Ending";
+    themeClass = "worried-theme";
     dialogue = "Master... this plan will help, but Minitoma is still a little worried.";
     advice = "Take a real break, drink water, and do not try to finish everything at once.";
   }
   else {
     image = "panic.png";
     resultTitle = "Emergency Recovery Ending";
+    themeClass = "panic-theme";
     dialogue = "MASTER NOOOO! Emergency student recovery protocol has been activated!";
     advice = "Please step away from the assignment for a moment. Eat something, breathe, and restart slowly.";
   }
@@ -206,10 +213,13 @@ app.post("/result", (req, res) => {
       <link rel="stylesheet" href="/style.css">
     </head>
 
-    <body>
+    <body class="${themeClass}">
       <div class="page">
 
-        <h1>${resultTitle}</h1>
+        <div class="title-area">
+          <h1>${resultTitle}</h1>
+          <p class="subtitle">Your custom recovery plan is ready ♡</p>
+        </div>
 
         <img
           src="/images/${image}"
